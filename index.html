@@ -15,6 +15,8 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
 
+    <script src="js/Chart.js"></script>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -41,17 +43,21 @@
       <a class="btn btn-xs btn-default" href="https://www.kimonolabs.com/api/csv/e90xc0kc?apikey=8df44091dc2ddaaf0631d5e08e94da12">CSV</a>
     </p>
 
+    <canvas id="myChart" width="400" height="200"></canvas>
+
     <table class="table table-hover">
       <thead>
         <tr>
           <th id="col-date">Date</th>
           <th id="col-rate">Official Cash Rate</th>
+          <th id="col-link">&nbsp;</th>
         </tr>
       </thead>
       <tbody id="tempo-template">
         <tr data-template>
           <td>{{date.text}}</td>
           <td>{{rate}}</td>
+          <td><a href="{{date.href}}">Details</a></td>
         </tr>
       </tbody>
     </table>
@@ -67,17 +73,49 @@
 <script src="js/tempo.js"></script>
 <script language="javascript">
     $(document).ready(function(){
-    var data = "https://www.kimonolabs.com/api/e90xc0kc?apikey=8df44091dc2ddaaf0631d5e08e94da12";
+
     var template = Tempo.prepare("tempo-template");
+    Chart.defaults.global.responsive = true;
+
     $.ajax({
       url:"https://www.kimonolabs.com/api/e90xc0kc?apikey=8df44091dc2ddaaf0631d5e08e94da12",
       crossDomain: true,
       dataType: "jsonp",
       success: function (data) {
-        template.render(data.results.collection1);
+        var records = data.results.collection1;
+
+        template.render(records);
+
+        var chartData = {
+          labels: [],
+          datasets: [
+            {
+              fillColor: "rgba(151,187,205,0.2)",
+              strokeColor: "rgba(151,187,205,1)",
+              pointColor: "rgba(151,187,205,1)",
+              pointStrokeColor: "#fff",
+              pointHighlightFill: "#fff",
+              pointHighlightStroke: "rgba(151,187,205,1)",
+              data: []
+            },
+          ]
+        };
+
+        for (var i=0; i<20; i++) {
+          chartData.labels.push(records[i].date.text);
+          chartData.datasets[0].data.push(parseFloat(records[i].rate));
+        }
+        chartData.labels.reverse();
+        chartData.datasets[0].data.reverse();
+
+
+        var ctx = $("#myChart").get(0).getContext("2d");
+        var myNewChart = new Chart(ctx).Line(chartData, {
+          'bezierCurve': false,
+        });
+
       },
-      error: function (xhr, status) {
-      }
+      error: function (xhr, status) {}
     });
   });
 </script>
