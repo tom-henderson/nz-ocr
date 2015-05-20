@@ -36,31 +36,42 @@
 <body>
 
 <div class="container">
-    <h1>NZ Official Cash Rate</h1>
-    
-    <p>
-      <a class="btn btn-xs btn-default" href="https://www.kimonolabs.com/api/e90xc0kc?apikey=8df44091dc2ddaaf0631d5e08e94da12">JSON</a>
-      <a class="btn btn-xs btn-default" href="https://www.kimonolabs.com/api/csv/e90xc0kc?apikey=8df44091dc2ddaaf0631d5e08e94da12">CSV</a>
-    </p>
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>NZ Official Cash Rate</h1>
+      <p>
+        <a class="btn btn-xs btn-default" href="https://www.kimonolabs.com/api/e90xc0kc?apikey=8df44091dc2ddaaf0631d5e08e94da12">JSON</a>
+        <a class="btn btn-xs btn-default" href="https://www.kimonolabs.com/api/csv/e90xc0kc?apikey=8df44091dc2ddaaf0631d5e08e94da12">CSV</a>
+      </p>
+    </div>
+  </div>
 
-    <canvas id="myChart" width="400" height="200"></canvas>
+  <div class="row">
+    <div class="col-xs-12">
+      <canvas id="myChart" style="padding-right: 30px;" width="400" height="200"></canvas>
+    </div>
+  </div>
 
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th id="col-date">Date</th>
-          <th id="col-rate">Official Cash Rate</th>
-          <th id="col-link">&nbsp;</th>
-        </tr>
-      </thead>
-      <tbody id="tempo-template">
-        <tr data-template>
-          <td>{{date.text}}</td>
-          <td>{{rate}}</td>
-          <td><a href="{{date.href}}">Details</a></td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th id="col-date">Date</th>
+            <th id="col-rate">Official Cash Rate</th>
+            <th id="col-link">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody id="tempo-template">
+          <tr data-template>
+            <td>{{date.text}}</td>
+            <td>{{rate}}</td>
+            <td><a href="{{date.href}}">Details</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 </div>
 
@@ -75,7 +86,6 @@
     $(document).ready(function(){
 
     var template = Tempo.prepare("tempo-template");
-    Chart.defaults.global.responsive = true;
 
     $.ajax({
       url:"https://www.kimonolabs.com/api/e90xc0kc?apikey=8df44091dc2ddaaf0631d5e08e94da12",
@@ -111,6 +121,8 @@
 
         var ctx = $("#myChart").get(0).getContext("2d");
         var myNewChart = new Chart(ctx).Line(chartData, {
+          'responsive': true,
+          'maintainAspectRatio': true,
           'bezierCurve': false,
         });
 
