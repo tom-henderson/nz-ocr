@@ -1,0 +1,27 @@
+name: Update OCR Data
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+  build:
+    name: Update OCR Data
+    runs-on: ubuntu-latest
+
+    env:
+      SLACK_CHANNEL: '#general'
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Update Data File
+        run: |
+          pip install requirements.txt
+          python3 update-data.py > data.json
+          git diff
