@@ -11,8 +11,8 @@
     <meta name="description" content="">
 
     <!-- Styles -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
 
     <script src="js/Chart.js"></script>
@@ -40,8 +40,7 @@
     <div class="col-xs-12">
       <h1>NZ Official Cash Rate</h1>
       <p>
-        <a class="btn btn-xs btn-default" href="https://www.kimonolabs.com/api/e90xc0kc?apikey=8df44091dc2ddaaf0631d5e08e94da12">JSON</a>
-        <a class="btn btn-xs btn-default" href="https://www.kimonolabs.com/api/csv/e90xc0kc?apikey=8df44091dc2ddaaf0631d5e08e94da12">CSV</a>
+        <a class="btn btn-xs btn-default" href="data.json">JSON</a>
       </p>
     </div>
   </div>
@@ -64,9 +63,9 @@
         </thead>
         <tbody id="tempo-template">
           <tr data-template>
-            <td>{{date.text}}</td>
+            <td>{{date}}</td>
             <td>{{rate}}</td>
-            <td><a href="{{date.href}}">Details</a></td>
+            <td><a href="{{link}}">Details</a></td>
           </tr>
         </tbody>
       </table>
@@ -79,23 +78,15 @@
 
 
 <!-- Javascript -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 <script src="js/tempo.js"></script>
 <script language="javascript">
-    $(document).ready(function(){
+    $(document).ready(function() {
 
-    var template = Tempo.prepare("tempo-template");
-
-    $.ajax({
-      url:"https://www.kimonolabs.com/api/e90xc0kc?apikey=8df44091dc2ddaaf0631d5e08e94da12",
-      crossDomain: true,
-      dataType: "jsonp",
-      success: function (data) {
-        var records = data.results.collection1;
-
-        template.render(records);
-
+      function render(data) {
+        var template = Tempo.prepare("tempo-template").render(data);
+    
         var chartData = {
           labels: [],
           datasets: [
@@ -110,25 +101,33 @@
             },
           ]
         };
-
-        for (var i=0; i<20; i++) {
-          chartData.labels.push(records[i].date.text);
-          chartData.datasets[0].data.push(parseFloat(records[i].rate));
+    
+        for (var i=0; i<50; i++) {
+          chartData.labels.push(data[i].date);
+          chartData.datasets[0].data.push(parseFloat(data[i].rate));
         }
         chartData.labels.reverse();
         chartData.datasets[0].data.reverse();
-
-
+    
+    
         var ctx = $("#myChart").get(0).getContext("2d");
         var myNewChart = new Chart(ctx).Line(chartData, {
           'responsive': true,
           'maintainAspectRatio': true,
           'bezierCurve': false,
         });
+      };
 
-      },
-      error: function (xhr, status) {}
-    });
+      $.ajax({
+        url: "http://tom-henderson.github.io/nz-ocr/data.json",
+        crossDomain: true,
+        dataType: "json",
+        success: function (data) {
+          render(data)
+        },
+        error: function (xhr, status) {}
+      });
+
   });
 </script>
 
