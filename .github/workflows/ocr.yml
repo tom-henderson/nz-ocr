@@ -22,8 +22,6 @@ jobs:
           python-version: 3.7
       - name: Update Data File
         run: |
-          pwd
-          ls -la
           pip install -r requirements.txt
           python update-data.py > data.json
           if ! git diff-index --quiet HEAD --; then
