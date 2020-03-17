@@ -29,11 +29,9 @@ jobs:
           if ! git diff-index --quiet HEAD --; then
             echo "OCR data file was updated."
             curl --silent --output /dev/null --show-error --request POST --header 'Content-type: application/json' --data "{'text':':money_with_wings: OCR data file was updated.','channel':'${SLACK_CHANNEL}'}" "${SLACK_WEBHOOK_URL}"
-            git remote -v
             git config --local user.name "GitHub Actions"    
             git config --local user.email "actions@github.com"
             git add data.json
-            git status
-            # git commit -m ":money_with_wings: OCR data file updated"
+            git commit -m ":money_with_wings: OCR data file updated"
           fi
           echo "done"
