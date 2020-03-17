@@ -24,5 +24,7 @@ jobs:
           ls -la
           pip install -r requirements.txt
           python update-data.py > data.json
-          git diff
-          echo "Done"
+          if ! git diff-index --quiet HEAD --; then
+            echo "data.json was updated"
+          fi
+          echo "done"
