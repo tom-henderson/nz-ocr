@@ -2,7 +2,7 @@ name: Update OCR Data
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '*/2 * * * *'
 
 jobs:
   build:
@@ -23,5 +23,5 @@ jobs:
       - name: Update Data File
         run: |
           pip install -r requirements.txt
-          python3 update-data.py > data.json
+          python update-data.py > data.json
           git diff
