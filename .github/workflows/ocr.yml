@@ -25,3 +25,4 @@ jobs:
           pip install -r requirements.txt
           python update-data.py > data.json
           git diff
+          echo "Done"
