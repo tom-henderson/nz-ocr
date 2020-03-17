@@ -25,6 +25,7 @@ jobs:
           pip install -r requirements.txt
           python update-data.py > data.json
           if ! git diff-index --quiet HEAD --; then
-            echo "data.json was updated"
+            echo "OCR data file was updated."
+            curl --silent --output /dev/null --show-error --request POST --header 'Content-type: application/json' --data "{'text':':money_with_wings: OCR data file was updated.','channel':'${SLACK_CHANNEL}'}" "${SLACK_WEBHOOK_URL}"
           fi
           echo "done"
